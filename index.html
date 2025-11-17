@@ -1,1 +1,161 @@
-<h1>placeholder</h1>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Inspiring Software Engineering Quotes</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --card:#0b1220;
+      --accent:#7c3aed;
+      --muted:#9aa4b2;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;display:grid;place-items:center;padding:2rem;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;
+      background:radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent),
+                 radial-gradient(900px 500px at 90% 90%, rgba(14,165,233,0.06), transparent),
+                 var(--bg);
+      color:#e6eef6;
+    }
+    .container{
+      width:100%;max-width:760px;padding:2rem;border-radius:16px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+      border: 1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+    header{display:flex;gap:1rem;align-items:center;margin-bottom:1.25rem}
+    .logo{width:56px;height:56px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),#06b6d4);font-weight:700}
+    h1{font-size:1.25rem;margin:0}
+    p.lead{margin:0;color:var(--muted)}
+
+    .card{background:var(--card);padding:1.5rem;border-radius:12px;margin-top:1rem;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+    .quote{font-size:1.125rem;line-height:1.5;min-height:4.5rem;transition:opacity .35s, transform .35s;}
+    .author{margin-top:0.75rem;color:var(--muted);font-size:.95rem;text-align:right}
+
+    .controls{display:flex;gap:.5rem;margin-top:1rem;align-items:center}
+    button{cursor:pointer;border:0;padding:.65rem .9rem;border-radius:10px;font-weight:600}
+    .primary{background:linear-gradient(90deg,var(--accent),#06b6d4);color:white;box-shadow:0 6px 18px rgba(124,58,237,.18)}
+    .secondary{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04)}
+    .small{padding:.45rem .6rem;font-size:.9rem}
+
+    .meta{display:flex;gap:.5rem;align-items:center;margin-left:auto}
+
+    footer{margin-top:1rem;color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;align-items:center}
+
+    @media (max-width:520px){
+      .container{padding:1rem}
+      .quote{font-size:1rem}
+    }
+  </style>
+</head>
+<body>
+  <main class="container" role="main">
+    <header>
+      <div class="logo" aria-hidden>⚙️</div>
+      <div>
+        <h1>Inspiring Software Engineering Quotes</h1>
+        <p class="lead">Click the button to get a short burst of motivation for building great software.</p>
+      </div>
+    </header>
+
+    <section class="card" aria-labelledby="quoteLabel">
+      <div>
+        <div id="quote" class="quote" aria-live="polite">"Write code as if the person who will maintain it is a violent psychopath who knows where you live."</div>
+        <div id="author" class="author">— John F. Woods (paraphrased)</div>
+      </div>
+
+      <div class="controls" aria-hidden="false">
+        <button id="inspire" class="primary">Inspire me!</button>
+
+        <div class="meta">
+          <button id="copy" class="secondary small">Copy</button>
+          <button id="tweet" class="secondary small">Tweet</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>Tip: Press <kbd>Space</kbd> or <kbd>Enter</kbd> while the Inspire button is focused.</div>
+      <div style="opacity:.8">Made with ❤️ for builders</div>
+    </footer>
+  </main>
+
+  <script>
+    // A curated set of short, inspiring software-engineering quotes
+    const quotes = [
+      {t: "Talk is cheap. Show me the code.", a: "— Linus Torvalds"},
+      {t: "Programs must be written for people to read, and only incidentally for machines to execute.", a: "— Harold Abelson"},
+      {t: "Simplicity is the soul of efficiency.", a: "— Austin Freeman (adapted)"},
+      {t: "Any fool can write code that a computer can understand. Good programmers write code that humans can understand.", a: "— Martin Fowler"},
+      {t: "The best error message is the one that never shows up.", a: "— Thomas Fuchs"},
+      {t: "Testing leads to failure, and failure leads to understanding.", a: "— Burt Rutan (applied)"},
+      {t: "Optimism is an occupational hazard of programming: feedback is the treatment.", a: "— Kent Beck (paraphrased)"},
+      {t: "Refactor early, refactor often.", a: "— Unknown"},
+      {t: "Code is like humor. When you have to explain it, it’s bad.", a: "— Cory House"},
+      {t: "Design is how it works, not how it looks.", a: "— Steve Jobs (paraphrased)"},
+      {t: "Speed is useful only if it does not compromise correctness.", a: "— Ward Cunningham"},
+      {t: "Make it work, make it right, make it fast — in that order.", a: "— Kent Beck"},
+      {t: "Architecture is the art of how to waste space thoughtfully.", a: "— Unknown"}
+    ];
+
+    const quoteEl = document.getElementById('quote');
+    const authorEl = document.getElementById('author');
+    const inspireBtn = document.getElementById('inspire');
+    const copyBtn = document.getElementById('copy');
+    const tweetBtn = document.getElementById('tweet');
+
+    function pickRandom(){
+      return quotes[Math.floor(Math.random()*quotes.length)];
+    }
+
+    function showQuote(q){
+      // Small fade/slide animation
+      quoteEl.style.opacity = 0; quoteEl.style.transform = 'translateY(6px)';
+      authorEl.style.opacity = 0;
+      setTimeout(()=>{
+        quoteEl.textContent = `"${q.t.replace(/\s+/g,' ').trim()}"`;
+        authorEl.textContent = q.a;
+        quoteEl.style.opacity = 1; quoteEl.style.transform = 'translateY(0)';
+        authorEl.style.opacity = 1;
+      }, 180);
+    }
+
+    inspireBtn.addEventListener('click', ()=> showQuote(pickRandom()));
+
+    // keyboard accessibility
+    inspireBtn.addEventListener('keydown', (e)=>{
+      if(e.key === ' ' || e.key === 'Enter'){
+        e.preventDefault(); showQuote(pickRandom());
+      }
+    });
+
+    // copy current quote
+    copyBtn.addEventListener('click', async ()=>{
+      const text = `${quoteEl.textContent} ${authorEl.textContent}`;
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = 'Copied!';
+        setTimeout(()=> copyBtn.textContent = 'Copy', 1200);
+      }catch(e){
+        copyBtn.textContent = 'Unable';
+        setTimeout(()=> copyBtn.textContent = 'Copy', 1200);
+      }
+    });
+
+    // tweet current quote
+    tweetBtn.addEventListener('click', ()=>{
+      const text = `${quoteEl.textContent} ${authorEl.textContent}`;
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener');
+    });
+
+    // allow keyboard space to trigger button even when not focused
+    document.addEventListener('keydown', (e)=>{
+      if((e.code === 'Space' || e.code === 'Enter') && document.activeElement === document.body){
+        e.preventDefault(); inspireBtn.focus(); inspireBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
